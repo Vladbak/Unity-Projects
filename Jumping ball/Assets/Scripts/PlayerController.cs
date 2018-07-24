@@ -5,6 +5,7 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
     private Rigidbody rb;
+    private float distToGround;
 
     public int Speed;
     public float PowerofJump;
@@ -13,9 +14,12 @@ public class PlayerController : MonoBehaviour
     void Start ()
     {
         Speed = 15;
-        PowerofJump = 300.0f;
+        PowerofJump = 400.0f;
 	    rb = GetComponent<Rigidbody>();
-	}
+
+        // get the distance to ground
+        distToGround = GetComponent<Collider>().bounds.extents.y;
+    }
 	
 	// Update is called once per frame
 	void Update () {
@@ -24,7 +28,7 @@ public class PlayerController : MonoBehaviour
 
     void FixedUpdate()
     {
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (Input.GetKeyDown(KeyCode.Space) && IsGrounded())
         {
             rb.AddForce(0.0f, PowerofJump ,0.0f);
         }
@@ -36,5 +40,9 @@ public class PlayerController : MonoBehaviour
 
         rb.AddForce(movement * Speed);
 
+    }
+    bool IsGrounded()
+    {
+        return Physics.Raycast(transform.position, -Vector3.up, distToGround + 0.1f);
     }
 }
